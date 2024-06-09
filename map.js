@@ -17,6 +17,23 @@ function addSatelliteLayer() {
 }
 addSatelliteLayer();
 
+// Adding the geocoder to the map
+var geocoder = L.Control.geocoder({
+    defaultMarkGeocode: false,
+    placeholder: "Search for an address", // Placeholder text in the search box
+    errorMessage: "Nothing found." // Error message when no results are found
+}).on('markgeocode', function(e) {
+    var bbox = e.geocode.bbox;
+    var poly = L.polygon([
+        bbox.getSouthEast(),
+        bbox.getNorthEast(),
+        bbox.getNorthWest(),
+        bbox.getSouthWest()
+    ]).addTo(map);
+    map.fitBounds(poly.getBounds());
+}).addTo(map);
+
+
 var polygonPoints = [];
 var polygon;
 var seedCoverage = 100; // Default seed coverage
