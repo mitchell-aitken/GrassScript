@@ -18,4 +18,4 @@ You can try out GrassScript live at [GrassScript on GitHub Pages](https://mitche
 1. Search for Location: Use the address search bar to find your area of interest.
 2. Mark the Area: Click on the map to draw the outline of your backyard or grass area.
 3. Calculate: Click the "Calculate Needs" button to view the area, perimeter, and required number of grass seed bags.
-4. Adjust Seed Coverage: Input the coverage area per bag of seeds as needed and recalculate.
+4. Adjust Seed Coverage: Input the coverage area per bag of seeds as needed and recalculate needs.
