@@ -17,22 +17,36 @@ function addSatelliteLayer() {
 }
 addSatelliteLayer();
 
+// Variable to hold the current geocode polygon
+var currentGeocodePolygon = null;
+
 // Adding the geocoder to the map
 var geocoder = L.Control.geocoder({
     defaultMarkGeocode: false,
     placeholder: "Search for an address", // Placeholder text in the search box
     errorMessage: "Nothing found." // Error message when no results are found
 }).on('markgeocode', function(e) {
+    if (currentGeocodePolygon) {
+        map.removeLayer(currentGeocodePolygon); // Remove the previous polygon
+    }
+
     var bbox = e.geocode.bbox;
-    var poly = L.polygon([
+    currentGeocodePolygon = L.polygon([
         bbox.getSouthEast(),
         bbox.getNorthEast(),
         bbox.getNorthWest(),
         bbox.getSouthWest()
     ]).addTo(map);
-    map.fitBounds(poly.getBounds());
+    map.fitBounds(currentGeocodePolygon.getBounds());
 }).addTo(map);
 
+// Remove the polygon when the map is zoomed or moved
+map.on('zoomend moveend', function() {
+    if (currentGeocodePolygon) {
+        map.removeLayer(currentGeocodePolygon);
+        currentGeocodePolygon = null;
+    }
+});
 
 var polygonPoints = [];
 var polygon;
@@ -104,7 +118,6 @@ function geodesicArea(latlngs) {
     return area; // Return area in square meters
 }
 
-
 // Compute the geodesic perimeter of the polygon
 function geodesicPerimeter(latlngs) {
     var R = 6371000; // meters
@@ -120,7 +133,7 @@ function geodesicPerimeter(latlngs) {
 // Calculate distance between two points on Earth's surface
 function distanceOnEarth(lat1, lng1, lat2, lng2) {
     var dLat = radians(lat2 - lat1);
-    var dLng = radians(lng2 - lng1);
+    var dLng = radians(lat2 - lng1);
     var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.cos(radians(lat1)) * Math.cos(radians(lat2)) *
             Math.sin(dLng / 2) * Math.sin(dLng / 2);
@@ -132,4 +145,3 @@ function distanceOnEarth(lat1, lng1, lat2, lng2) {
 function radians(degrees) {
     return degrees * Math.PI / 180;
 }
-
